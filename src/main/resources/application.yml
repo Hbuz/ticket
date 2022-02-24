@@ -26,3 +26,11 @@ spring:
     path: /h2-console
     console.settings.trace: false
     spring.h2.console.settings.web-allow-others: false
+server:
+  ssl:
+    key-store: classpath:ticket.jks
+    key-store-type: pkcs12
+    key-store-password: password
+    key-password: password
+    key-alias: ticket
+  port: 8084

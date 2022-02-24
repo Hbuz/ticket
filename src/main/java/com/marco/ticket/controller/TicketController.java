@@ -31,8 +31,8 @@ public class TicketController {
     }
 
     @GetMapping()
-    public ResponseEntity<Object> getTicket() throws Exception {
-        ticketService.getTicket();
-        return ok().build();
+    public ResponseEntity<TicketDTO> getTicket() throws Exception {
+        TicketDTO ticketDTO = ticketService.getTicket();
+        return ok(ticketDTO);
     }
 }

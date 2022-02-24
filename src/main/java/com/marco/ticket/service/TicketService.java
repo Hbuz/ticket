@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -17,6 +20,9 @@ import java.util.Optional;
 public class TicketService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketService.class);
+
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     private final TicketRepository ticketRepository;
 
@@ -35,7 +41,7 @@ public class TicketService {
             ticket.setToken(this.generateToken());
             ticket.setValidityDate(ticketReqDTO.getValidityDate());
             ticket.setUserId(ticketReqDTO.getUserId());
-
+            ticket.setCreatedOn(LocalDateTime.now());
             ticket = ticketRepository.save(ticket);
 
         } catch (Exception e) {
@@ -46,21 +52,20 @@ public class TicketService {
         return this.toTicketDTO(ticket);
     }
 
-    public void getTicket() {
-        Optional<Ticket> ticket = ticketRepository.findById(1);
-        if (ticket.isPresent()) {
-            LOGGER.info("FOUND: {}", ticket.get().getToken());
+    public TicketDTO getTicket() {
+        Optional<Ticket> ticketOpt = ticketRepository.findById(1);
+        if (ticketOpt.isPresent()) {
+            LOGGER.info("FOUND: {}", ticketOpt.get().getToken());
+            return this.toTicketDTO(ticketOpt.get());
         }
+        return null;
     }
 
-
-    private String generateToken () {
-
-        String token = "";
-        // Some logic to create a random token with fixed size
-        return token;
+    public static String generateToken() {
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
-
 
     private TicketDTO toTicketDTO(Ticket ticket) {
         TicketDTO ticketDTO = new TicketDTO(
@@ -70,7 +75,6 @@ public class TicketService {
                 ticket.getUserId(),
                 ticket.getCreatedOn()
         );
-
         return ticketDTO;
     }
 }
