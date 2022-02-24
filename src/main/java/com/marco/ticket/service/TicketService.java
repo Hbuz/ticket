@@ -4,6 +4,7 @@ import com.marco.ticket.dto.TicketDTO;
 import com.marco.ticket.dto.TicketReqDTO;
 import com.marco.ticket.model.Ticket;
 import com.marco.ticket.repository.TicketRepository;
+import com.marco.ticket.util.ObjectSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,10 +28,12 @@ public class TicketService {
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
 
     private final TicketRepository ticketRepository;
+    private final ObjectSerializer objectSerializer;
 
     @Autowired
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, ObjectSerializer objectSerializer) {
         this.ticketRepository = ticketRepository;
+        this.objectSerializer = objectSerializer;
     }
 
     public TicketDTO createTicket(TicketReqDTO ticketReqDTO) {
@@ -49,32 +54,32 @@ public class TicketService {
             throw e;
         }
 
-        return this.toTicketDTO(ticket);
+        return objectSerializer.toTicketDTO(ticket);
     }
 
-    public TicketDTO getTicket() {
-        Optional<Ticket> ticketOpt = ticketRepository.findById(1);
+    public TicketDTO getTicket(Integer id) {
+
+        Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         if (ticketOpt.isPresent()) {
-            LOGGER.info("FOUND: {}", ticketOpt.get().getToken());
-            return this.toTicketDTO(ticketOpt.get());
+
+            LOGGER.debug("FOUND: {}", ticketOpt.get().getToken());
+
+            return objectSerializer.toTicketDTO(ticketOpt.get());
         }
         return null;
     }
 
-    public static String generateToken() {
+    public List<TicketDTO> getTickets() {
+        List<TicketDTO> ticketsDTO = new ArrayList<>();
+        ticketRepository.findAll().stream().forEach(ticket -> {
+            ticketsDTO.add(objectSerializer.toTicketDTO(ticket));
+        });
+        return ticketsDTO;
+    }
+
+    private String generateToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
-    }
-
-    private TicketDTO toTicketDTO(Ticket ticket) {
-        TicketDTO ticketDTO = new TicketDTO(
-                ticket.getId(),
-                ticket.getToken(),
-                ticket.getValidityDate(),
-                ticket.getUserId(),
-                ticket.getCreatedOn()
-        );
-        return ticketDTO;
     }
 }

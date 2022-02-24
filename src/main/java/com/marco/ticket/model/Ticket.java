@@ -19,13 +19,13 @@ public class Ticket implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "token")
+    @Column(name = "token", nullable = false)
     private String token;
 
-    @Column(name = "validity_date", nullable = false, updatable = false)
+    @Column(name = "validity_date", nullable = false)
     private LocalDateTime validityDate;
 
-    @Column(name = "user_id", nullable = true)
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 
     @Column(name = "created_on", nullable = false, updatable = false)

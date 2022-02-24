@@ -33,10 +33,10 @@ public class TicketControllerTest {
     public void testGetTicketAPI() throws Exception {
 
         TicketDTO ticket = new TicketDTO(1, "token", LocalDateTime.now(), 123, LocalDateTime.now());
-        given(ticketService.getTicket()).willReturn(ticket);
+        given(ticketService.getTicket(1)).willReturn(ticket);
 
         mvc.perform(MockMvcRequestBuilders
-                .get("/ticket")
+                .get("/ticket/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
