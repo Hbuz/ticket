@@ -62,7 +62,7 @@ public class TicketService {
         Optional<Ticket> ticketOpt = ticketRepository.findById(id);
         if (ticketOpt.isPresent()) {
 
-            LOGGER.debug("FOUND: {}", ticketOpt.get().getToken());
+            LOGGER.debug("Ticket found: {}", ticketOpt.get().getToken());
 
             return objectSerializer.toTicketDTO(ticketOpt.get());
         }
