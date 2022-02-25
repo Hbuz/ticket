@@ -5,8 +5,9 @@ Endpoints that can be called:
 - Create a ticket:
 
   POST - https://localhost:8084/ticket 
+  
   body = {
-            "validity_date": "2022-02-24T20:42:04.191588",
+            "validity_date": "2022-02-25T23:59",
             "userId": 1
          }
 
