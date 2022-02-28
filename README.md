@@ -51,20 +51,22 @@ java -jar target/*.jar
             "userId": 1
          }
 `
-  respose = {
+```
+  response = {
     "id": 1,
     "token": "duh7sdDS_BBCz5BIOKJMDbzquBgV3xeU",
     "validity_date": "2022-02-25T23:59:00",
     "user_id": 1,
     "created_on": "2022-02-28T22:44:49.521088"
-}
+  }
+```
 
 - Get ticket by ID:
 
 ```
   GET - https://localhost:8084/tickets/{id}
 ```
-`
+```
 response = {
     "id": 2,
     "token": "duh7sdDS_BBCz5BIOKJMDbzquBgV3xeU",
@@ -72,7 +74,7 @@ response = {
     "user_id": 1,
     "created_on": "2022-02-28T22:44:49.521088"
 }
-`
+```
 
 
 - Get list of tickets
@@ -80,7 +82,7 @@ response = {
 ```
   GET - https://localhost:8084/tickets
 ```
-`
+```
 response = [
     {
         "id": 1,
@@ -97,7 +99,7 @@ response = [
         "created_on": "2022-02-28T22:44:49.521088"
     }
 ]
-`
+```
 
 #### Note
 All services can be call with SSL, and I also added an already generated certificate in the classpath by convenience.
