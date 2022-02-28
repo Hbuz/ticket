@@ -1,6 +1,8 @@
 package com.marco.ticket.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marco.ticket.dto.TicketDTO;
+import com.marco.ticket.dto.TicketReqDTO;
 import com.marco.ticket.service.TicketService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,9 @@ public class TicketControllerTest {
     @MockBean
     private TicketService ticketService;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @Test
     public void givenTicket_whenGetTicket_thenReturnJson() throws Exception {
 
@@ -49,11 +54,11 @@ public class TicketControllerTest {
 
     @Test
     public void whenValidInput_thenCreateEmployee() throws Exception {
-//        TicketReqDTO ticketReqDTO = new TicketReqDTO(123, LocalDateTime.now());
+        TicketReqDTO ticketReqDTO = new TicketReqDTO(123, LocalDateTime.now());
 
         mvc.perform(post("/ticket")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{ \"validity_date\":\"2022-02-25T00:00\",\"userId\":1}"))
+                .content(objectMapper.writeValueAsString(ticketReqDTO)))
                 .andExpect(status().isOk())
                 .andReturn();
     }

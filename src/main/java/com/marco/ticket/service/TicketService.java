@@ -2,6 +2,8 @@ package com.marco.ticket.service;
 
 import com.marco.ticket.dto.TicketDTO;
 import com.marco.ticket.dto.TicketReqDTO;
+import com.marco.ticket.exception.NotFoundException;
+import com.marco.ticket.exception.ValueNotValidException;
 import com.marco.ticket.model.Ticket;
 import com.marco.ticket.repository.TicketRepository;
 import com.marco.ticket.util.ObjectSerializer;
@@ -38,10 +40,12 @@ public class TicketService {
 
     public TicketDTO createTicket(TicketReqDTO ticketReqDTO) {
 
+        if (ticketReqDTO.getUserId() == null || ticketReqDTO.getValidityDate() == null) {
+            throw new ValueNotValidException();
+        }
+
         Ticket ticket;
-
         try {
-
             ticket = new Ticket();
             ticket.setToken(this.generateToken());
             ticket.setValidityDate(ticketReqDTO.getValidityDate());
@@ -66,14 +70,12 @@ public class TicketService {
 
             return objectSerializer.toTicketDTO(ticketOpt.get());
         }
-        return null;
+        throw new NotFoundException();
     }
 
     public List<TicketDTO> getTickets() {
         List<TicketDTO> ticketsDTO = new ArrayList<>();
-        ticketRepository.findAll().stream().forEach(ticket -> {
-            ticketsDTO.add(objectSerializer.toTicketDTO(ticket));
-        });
+        ticketRepository.findAll().stream().forEach(ticket -> ticketsDTO.add(objectSerializer.toTicketDTO(ticket)));
         return ticketsDTO;
     }
 
