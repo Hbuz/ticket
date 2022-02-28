@@ -5,13 +5,12 @@ import com.marco.ticket.dto.TicketReqDTO;
 import com.marco.ticket.model.Ticket;
 import com.marco.ticket.repository.TicketRepository;
 import com.marco.ticket.util.ObjectSerializer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class TicketServiceTest {
 
     @Mock
@@ -35,7 +34,7 @@ public class TicketServiceTest {
     private Ticket ticket1;
     private TicketReqDTO ticketReqDTO;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validityDate = LocalDateTime.of(2022, 2, 25, 0, 0);
 

@@ -2,19 +2,23 @@ package com.marco.ticket.repository;
 
 import com.marco.ticket.model.Ticket;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
+@WebAppConfiguration
+@Transactional
 public class TicketRepositoryIntegrationTest {
 
     @Autowired
@@ -26,7 +30,7 @@ public class TicketRepositoryIntegrationTest {
     private Ticket ticket1;
     private LocalDateTime validityDate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         validityDate = LocalDateTime.of(2022, 2, 25, 0, 0);
 
