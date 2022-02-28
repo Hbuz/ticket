@@ -8,7 +8,6 @@ import com.marco.ticket.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController("TicketController")
-@RequestMapping(path = "/ticket")
+@RequestMapping(path = "/tickets")
 public class TicketController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TicketController.class);
@@ -35,13 +34,13 @@ public class TicketController {
         TicketDTO response;
         try {
             response = ticketService.createTicket(ticketReqDTO);
+
         } catch (ValueNotValidException e) {
             LOGGER.error("Failed createTicket request. Message:{}", e.getMessage());
-
             return badRequest().build();
-        } catch (Exception e1) {
-            LOGGER.error("Failed createTicket request. Message:{}", e1.getMessage());
 
+        } catch (Exception e) {
+            LOGGER.error("Failed createTicket request. Message:{}", e.getMessage());
             return internalServerError().build();
         }
         return ok(response);
@@ -53,14 +52,15 @@ public class TicketController {
         TicketDTO ticketDTO;
         try {
             ticketDTO = ticketService.getTicket(id);
+
         } catch (NotFoundException e) {
             LOGGER.error("Failed getTicket request. Message:{}", e.getMessage());
-
             return notFound().build();
-        } catch (Exception e1) {
-            LOGGER.error("Failed getTicket request. Message:{}", e1.getMessage());
 
+        } catch (Exception e) {
+            LOGGER.error("Failed getTicket request. Message:{}", e.getMessage());
             return internalServerError().build();
+
         }
         return ok(ticketDTO);
     }
@@ -72,10 +72,10 @@ public class TicketController {
         try {
             ticketDTO = ticketService.getTickets();
 
-        } catch (Exception e1) {
-            LOGGER.error("Failed getTickets request. Message:{}", e1.getMessage());
-
+        } catch (Exception e) {
+            LOGGER.error("Failed getTickets request. Message:{}", e.getMessage());
             return internalServerError().build();
+
         }
         return ok(ticketDTO);
     }

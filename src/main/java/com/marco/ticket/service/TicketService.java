@@ -53,7 +53,7 @@ public class TicketService {
             ticket.setCreatedOn(LocalDateTime.now());
             ticket = ticketRepository.save(ticket);
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             LOGGER.error("createTicket: FAILED", e.getMessage());
             throw e;
         }

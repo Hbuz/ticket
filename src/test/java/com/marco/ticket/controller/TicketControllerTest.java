@@ -3,6 +3,7 @@ package com.marco.ticket.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marco.ticket.dto.TicketDTO;
 import com.marco.ticket.dto.TicketReqDTO;
+import com.marco.ticket.exception.NotFoundException;
 import com.marco.ticket.service.TicketService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.given;
@@ -44,7 +46,7 @@ public class TicketControllerTest {
         given(ticketService.getTicket(1)).willReturn(ticket);
 
         mvc.perform(MockMvcRequestBuilders
-                .get("/ticket/{id}", 1)
+                .get("/tickets/{id}", 1)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -53,10 +55,36 @@ public class TicketControllerTest {
     }
 
     @Test
+    public void givenATicket_whenGetTicket_andValueNotFound_thenReturnError() throws Exception {
+
+        given(ticketService.getTicket(321)).willThrow(new NotFoundException());
+
+        mvc.perform(MockMvcRequestBuilders
+                .get("/tickets/{id}", 321)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void whenGetTickets_andNoValuesFound_thenReturnEmpty() throws Exception {
+
+        given(ticketService.getTickets()).willReturn(new ArrayList<>());
+
+        mvc.perform(MockMvcRequestBuilders
+                .get("/tickets")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").doesNotExist())
+                .andReturn();
+    }
+
+    @Test
     public void whenValidInput_thenCreateEmployee() throws Exception {
         TicketReqDTO ticketReqDTO = new TicketReqDTO(123, LocalDateTime.now());
 
-        mvc.perform(post("/ticket")
+        mvc.perform(post("/tickets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(ticketReqDTO)))
                 .andExpect(status().isOk())
